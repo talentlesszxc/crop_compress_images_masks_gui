@@ -43,8 +43,9 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.output_path_edit_3.setText(self.output_directory) 
             self.output_path_edit_4.setText(self.output_directory) 
             
-    def crop_images(self):        
-        root_path = self.input_path_edit.text()
+    def crop_images(self):    
+        self.progressBar.setValue(0)
+        root_path = self.input_path_edit.text()        
         img_width = int(self.required_width_edit.text())
         img_height = int(self.required_height_edit.text())
         
@@ -69,6 +70,7 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.progressBar.setValue(value)      
             
     def crop_masks(self):          
+        self.progressBar_2.setValue(0)
         root_path = self.input_path_edit_2.text()
         mask_width = int(self.required_width_edit_2.text())
         mask_height = int(self.required_height_edit_2.text())
@@ -97,6 +99,7 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.progressBar_2.setValue(value)
             
     def compress_images(self):
+        self.progressBar_3.setValue(0)
         root_path = self.input_path_edit_3.text()
         all_images = []
         #counter = 0
@@ -125,6 +128,7 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
         print("Data has been successfully exported.")
         
     def compress_masks(self):
+        self.progressBar_4.setValue(0)
         root_path = self.input_path_edit_4.text()
         all_masks = []
         #counter = 0
