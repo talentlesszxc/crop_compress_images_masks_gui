@@ -150,9 +150,9 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
         all_masks = np.asarray(all_masks)
         print("Shape of Train masks = ", all_masks.shape)
         
-        self.lineEdit.setText("Total number of files = " + str(len(files)) + '. ' + "Shape of Train Masks = " + str(all_masks.shape))
+        self.lineEdit_2.setText("Total number of files = " + str(len(files)) + '. ' + "Shape of Train Masks = " + str(all_masks.shape))
         
-        with h5py.File(self.output_path_edit_3.text() + '/masks.h5py', 'w') as hf:
+        with h5py.File(self.output_path_edit_4.text() + '/masks.h5py', 'w') as hf:
             hf.create_dataset("all_masks", data = all_masks)
             
         print("Data has been successfully exported.")
