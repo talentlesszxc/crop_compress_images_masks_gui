@@ -81,9 +81,9 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
         
         for mask_file in os.listdir(root_path):            
             mask_path = root_path + '/' + mask_file
-            mask = cv2.imread(mask_path)
-            mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-            mask = mask//38
+            mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            #mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+            #mask = mask//38
             
             number_of_file += 1
             counter = 0
