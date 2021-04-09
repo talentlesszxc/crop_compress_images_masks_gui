@@ -15,16 +15,24 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.input_folder_button_2.clicked.connect(self.get_input_folder)
         self.input_folder_button_3.clicked.connect(self.get_input_folder)
         self.input_folder_button_4.clicked.connect(self.get_input_folder)
+        self.resize_input_folder_button.clicked.connect(self.get_input_folder)
+        self.npy_input_folder_button.clicked.connect(self.get_input_folder)
+        
         
         self.output_folder_button.clicked.connect(self.get_output_folder)
         self.output_folder_button_2.clicked.connect(self.get_output_folder)
         self.output_folder_button_3.clicked.connect(self.get_output_folder)
         self.output_folder_button_4.clicked.connect(self.get_output_folder)
+        self.resize_output_folder_button.clicked.connect(self.get_output_folder)
+        self.npy_output_folder_button.clicked.connect(self.get_output_folder)
         
         self.start_button.clicked.connect(self.crop_images)
         self.start_button_2.clicked.connect(self.crop_masks)
         self.start_button_3.clicked.connect(self.compress_images)
         self.start_button_4.clicked.connect(self.compress_masks)
+        self.resize_start_button.clicked.connect(self.resize_images)
+        self.npy_start_button.clicked.connect(self.npy_to_mask)
+        
         
     
     def get_input_folder(self):
@@ -34,6 +42,8 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.input_path_edit_2.setText(self.input_directory)
             self.input_path_edit_3.setText(self.input_directory)
             self.input_path_edit_4.setText(self.input_directory)
+            self.resize_input_path_edit.setText(self.input_directory)
+            self.npy_input_path_edit.setText(self.input_directory)
     
     def get_output_folder(self):
         self.output_directory = QtWidgets.QFileDialog.getExistingDirectory(self, "Выберите папку")
@@ -41,8 +51,33 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
             self.output_path_edit.setText(self.output_directory) 
             self.output_path_edit_2.setText(self.output_directory) 
             self.output_path_edit_3.setText(self.output_directory) 
-            self.output_path_edit_4.setText(self.output_directory) 
+            self.output_path_edit_4.setText(self.output_directory)
+            self.resize_output_path_edit.setText(self.output_directory)
+            self.npy_output_path_edit.setText(self.output_directory)
+    
+    def resize_images(self):
+        self.resize_progressBar.setValue(0)
+        root_path = self.resize_input_path_edit.text()
+        new_dim = (int(self.resize_required_width_edit.text()),int(self.resize_required_height_edit.text()))
+        print (new_dim)
+        
+        files = next(os.walk(root_path))[2]
+        print('Total number of files =',len(files))
+        number_of_file = 0
+        for image_file in os.listdir(root_path): 
+            print(image_file)      
+   
+            image_path = root_path+'/'+image_file
+            image = cv2.imread(image_path)                 
+            resized = cv2.resize(image, new_dim, interpolation = cv2.INTER_AREA)        
+            new_image_path = self.resize_output_path_edit.text()+'/'+image_file            
+            #print(np.unique(resized))
+            cv2.imwrite(new_image_path, resized)
             
+            number_of_file += 1            
+            value = number_of_file/len(files)*100
+            self.resize_progressBar.setValue(value)
+    
     def crop_images(self):    
         self.progressBar.setValue(0)
         root_path = self.input_path_edit.text()        
@@ -97,6 +132,23 @@ class MainWindow(QtWidgets.QMainWindow, design.Ui_MainWindow):
                     cv2.imwrite(new_mask_path, blank_mask)  
             value = number_of_file/len(files)*100
             self.progressBar_2.setValue(value)
+    
+    def npy_to_mask(self):
+        self.npy_progressBar.setValue(0)
+        root_path = self.npy_input_path_edit.text()
+        files = next(os.walk(root_path))[2]
+        print('Total number of files =',len(files))
+        self.npy_lineEdit.setText("Total number of files = " + str(len(files)))
+        number_of_file = 0
+        for npy_file in os.listdir(root_path):
+            print(npy_file)
+            npy_file_path = root_path+'/'+npy_file
+            f =  np.load(npy_file_path)        
+            new_mask_path = os.path.splitext(self.npy_output_path_edit.text()+ '/'+npy_file)[0] + ".png"
+            cv2.imwrite(new_mask_path, f)
+            number_of_file += 1            
+            value = number_of_file/len(files)*100
+            self.npy_progressBar.setValue(value)
             
     def compress_images(self):
         self.progressBar_3.setValue(0)
